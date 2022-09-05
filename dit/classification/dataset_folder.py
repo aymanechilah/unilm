@@ -218,26 +218,35 @@ class RvlcdipDatasetFolder(VisionDataset):
     ) -> None:
         super().__init__(root, transform=transform, target_transform=target_transform)
         self.dataset_size = int(dataset_size) if dataset_size is not None else 42948004
-        classes = ["letter",
-                   "form",
-                   "email",
-                   "handwritten",
-                   "advertisement",
-                   "scientific report",
-                   "scientific publication",
-                   "specification",
-                   "file folder",
-                   "news article",
-                   "budget",
-                   "invoice",
-                   "presentation",
-                   "questionnaire",
-                   "resume",
-                   "memo"]
+        classes = {0: "letter",
+                   1: "form",
+                   2: "email",
+                   3: "handwritten",
+                   4: "advertisement",
+                   5: "scientific_report",
+                   6: "scientific_publication",
+                   7: "specification",
+                   8: "file_folder",
+                   9: "news_article",
+                   10: "budget",
+                   11: "invoice",
+                   12: "presentation",
+                   13: "questionnaire",
+                   14: "resume",
+                   15: "memo"
+                   }
         class_to_idx = {c: i for i, c in enumerate(classes)}
+
+        samples = {}
         with open("/dbfs/mnt/s3_dev/ocr/datasets/rvl_cdip_train_labels.txt") as f:
             labels = f.read().splitlines()
-            samples = [(line.split()[0], int(line.split()[1])) for line in labels]
+            # samples = [(line.split()[0], int(line.split()[1])) for line in labels]
+            for l in labels:
+                l_ = l.strip().split("")
+                head, tail = os.path.split(l_[0])
+                # print(tail, label_names[int(l_[1])])
+                samples[tail] = classes[int(l_[1])]
+
         try:
             assert len(samples) > 0 and os.path.exists(os.path.join(self.root, "images", samples[0][0]))
         except:
@@ -291,8 +300,8 @@ class RvlcdipImageFolder(RvlcdipDatasetFolder):
             dataset_size: Optional[int] = None
     ):
         super().__init__(root, loader, IMG_EXTENSIONS if split is None else None,
-                                              transform=transform,
-                                              target_transform=target_transform,
-                                              split=split,
-                                              dataset_size=dataset_size)
+                         transform=transform,
+                         target_transform=target_transform,
+                         split=split,
+                         dataset_size=dataset_size)
         self.imgs = self.samples
