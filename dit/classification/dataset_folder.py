@@ -243,23 +243,13 @@ class RvlcdipDatasetFolder(VisionDataset):
             # samples = [(line.split()[0], int(line.split()[1])) for line in labels]
             samples = []
             for l in labels:
-                #print('L1')
-                #print(l)
+
                 num_class = l.strip('').rsplit(' ', 1)[-1]
                 if len(num_class) == 2:
                     tail = (l.strip()).rsplit("/", 1)[-1][:-3]
                 else:
                     tail = (l.strip()).rsplit("/", 1)[-1][:-2]
-                #print('L2')
-                #print(tail)
-                #head, tail = os.path.split(l_[0])
-                #print('l3')
-                #print(num_class)
-                # print(tail, label_names[int(l_[1])])
                 samples.append([tail, int(num_class)])
-                #print('l4')
-                #print(classes[int(num_class)])
-
 
         try:
             assert len(samples) > 0 and os.path.exists(os.path.join(self.root, "images", samples[0][0]))
