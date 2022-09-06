@@ -257,7 +257,7 @@ class RvlcdipDatasetFolder(VisionDataset):
                 # print(tail, label_names[int(l_[1])])
                 samples.append([tail, int(num_class)])
                 print('l4')
-                print(classes[int(num_class)])
+                print(samples)
 
 
         try:
