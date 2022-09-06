@@ -237,7 +237,7 @@ class RvlcdipDatasetFolder(VisionDataset):
                    }
         class_to_idx = {c: i for i, c in enumerate(classes)}
 
-        samples = {}
+        samples = []
         with open("/dbfs/mnt/s3_dev/ocr/datasets/rvl_cdip_train_labels.txt") as f:
             labels = f.read().splitlines()
             # samples = [(line.split()[0], int(line.split()[1])) for line in labels]
@@ -255,7 +255,7 @@ class RvlcdipDatasetFolder(VisionDataset):
                 print('l3')
                 print(num_class)
                 # print(tail, label_names[int(l_[1])])
-                samples[tail] = classes[int(num_class)]
+                samples.append([tail, int(num_class)])
                 print('l4')
                 print(classes[int(num_class)])
 
