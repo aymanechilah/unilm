@@ -242,8 +242,11 @@ class RvlcdipDatasetFolder(VisionDataset):
             labels = f.read().splitlines()
             # samples = [(line.split()[0], int(line.split()[1])) for line in labels]
             for l in labels:
+                print('L1')
+                print('l')
                 l_ = (l.strip()).rsplit("/", 1)[-1]
-                print(l)
+                print('L2')
+                print(l_)
                 head, tail = os.path.split(l_[0])
                 # print(tail, label_names[int(l_[1])])
                 samples[tail] = classes[int(l_[1])]
