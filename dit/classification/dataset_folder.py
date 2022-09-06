@@ -237,10 +237,10 @@ class RvlcdipDatasetFolder(VisionDataset):
                    }
         class_to_idx = {c: i for i, c in enumerate(classes)}
 
-        samples = []
         with open("/dbfs/mnt/s3_dev/ocr/datasets/rvl_cdip_train_labels.txt") as f:
             labels = f.read().splitlines()
             # samples = [(line.split()[0], int(line.split()[1])) for line in labels]
+            samples = []
             for l in labels:
                 print('L1')
                 print(l)
