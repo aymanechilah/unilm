@@ -238,19 +238,19 @@ class RvlcdipDatasetFolder(VisionDataset):
         class_to_idx = {c: i for i, c in enumerate(classes)}
 
         #samples = {}
+        samples = []
         with open("/dbfs/mnt/s3_dev/ocr/datasets/rvl_cdip_train_labels.txt") as f:
             labels = f.read().splitlines()
             # samples = [(line.split()[0], int(line.split()[1])) for line in labels]
-            samples = []
             for l in labels:
-
                 num_class = l.strip('').rsplit(' ', 1)[-1]
                 if len(num_class) == 2:
                     tail = (l.strip()).rsplit("/", 1)[-1][:-3]
                 else:
                     tail = (l.strip()).rsplit("/", 1)[-1][:-2]
                 samples.append([tail, int(num_class)])
-
+        print(len(samples))
+        print(os.path.join(self.root, samples[0][0]))
         try:
             assert len(samples) > 0 and os.path.exists(os.path.join(self.root, samples[0][0]))
         except:
