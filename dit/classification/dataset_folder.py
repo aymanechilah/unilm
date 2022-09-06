@@ -244,7 +244,7 @@ class RvlcdipDatasetFolder(VisionDataset):
             for l in labels:
                 print('L1')
                 print(l)
-                l_ = (l.strip()).rsplit("/", 1)[-1]
+                l_ = (l.strip()).rsplit("/", 1)[-1][:-2]
                 print('L2')
                 print(l_)
                 head, tail = os.path.split(l_[0])
