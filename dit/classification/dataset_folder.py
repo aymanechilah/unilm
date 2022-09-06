@@ -276,7 +276,7 @@ class RvlcdipDatasetFolder(VisionDataset):
         while True:
             try:
                 path, target = self.samples[index]
-                sample = self.loader(os.path.join(self.root, "images", path))
+                sample = self.loader(os.path.join(self.root, path))
                 break
             except Exception as e:
                 print(e)
