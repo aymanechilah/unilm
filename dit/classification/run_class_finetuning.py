@@ -1,4 +1,4 @@
-# --------------------------------------------------------
+78# --------------------------------------------------------
 # DIT: SELF-SUPERVISED PRE-TRAINING FOR DOCUMENT IMAGE TRANSFORMER
 # Based on Beit
 # --------------------------------------------------------'
@@ -38,7 +38,7 @@ def get_args():
                         help='Name of model to train')
     parser.add_argument('--rel_pos_bias', action='store_true')
     parser.add_argument('--disable_rel_pos_bias', action='store_false', dest='rel_pos_bias')
-    parser.set_defaults(rel_pos_bias=True)
+    parser.set_defaults(rel_pos_bias=False)
     parser.add_argument('--abs_pos_emb', action='store_true')
     parser.add_argument('--qkv_bias', action='store_true')
     parser.add_argument('--layer_scale_init_value', default=0.1, type=float, 
