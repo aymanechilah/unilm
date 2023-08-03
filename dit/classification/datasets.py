@@ -37,6 +37,7 @@ def build_dataset(is_train, args):
         split = "train" if is_train else "test"
         dataset = RvlcdipImageFolder(root, split=split, transform=transform)
         nb_classes = args.nb_classes
+        print("CLASSES", dataset.class_to_idx)
         assert len(dataset.class_to_idx) == nb_classes
     else:
         raise NotImplementedError()

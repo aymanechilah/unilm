@@ -9,6 +9,7 @@
 # --------------------------------------------------------'
 import os
 import os.path
+from pathlib import Path
 import random
 from typing import Any, Callable, cast, Dict, List, Optional, Tuple
 
@@ -214,57 +215,33 @@ class RvlcdipDatasetFolder(VisionDataset):
             transform: Optional[Callable] = None,
             target_transform: Optional[Callable] = None,
             split: str = None,
-            dataset_size: Optional[int] = None
+            dataset_size: Optional[int] = None,
+            classes: List[str] = None
     ) -> None:
         super().__init__(root, transform=transform, target_transform=target_transform)
         self.dataset_size = int(dataset_size) if dataset_size is not None else 42948004
-        classes = {0: "letter",
-                   1: "form",
-                   2: "email",
-                   3: "handwritten",
-                   4: "advertisement",
-                   5: "scientific_report",
-                   6: "scientific_publication",
-                   7: "specification",
-                   8: "file_folder",
-                   9: "news_article",
-                   10: "budget",
-                   11: "invoice",
-                   12: "presentation",
-                   13: "questionnaire",
-                   14: "resume",
-                   15: "memo"
-                   }
-        class_to_idx = {c: i for i, c in enumerate(classes)}
-
-        #samples = {}
-        samples = []
-        with open("/dbfs/mnt/s3_dev/ocr/datasets/rvl_cdip_train_labels.txt") as f:
+        self.classes = classes or self.get_classes_from_fs()
+        class_to_idx = {c: i for i, c in enumerate(self.classes)}
+        with open(os.path.join(self.root, "labels", split + ".txt"), "r") as f:
             labels = f.read().splitlines()
-            # samples = [(line.split()[0], int(line.split()[1])) for line in labels]
-            for l in labels:
-                num_class = l.strip('').rsplit(' ', 1)[-1]
-                if len(num_class) == 2:
-                    tail = (l.strip()).rsplit("/", 1)[-1][:-3]
-                else:
-                    tail = (l.strip()).rsplit("/", 1)[-1][:-2]
-                samples.append([tail, int(num_class)])
-        print(len(samples))
-        print(os.path.join(self.root, samples[0][0]))
+            samples = [(line.split()[0], int(line.split()[1])) for line in labels]
         try:
-            assert len(samples) > 0 
+            assert len(samples) > 0 and os.path.exists(os.path.join(self.root, "images", samples[0][0]))
         except:
-            msg = "Found 0 files in subfolders of: {}\n".format(self.root)
-            msg += "Expected first file: {}".format(os.path.join(self.root, samples[0][0]))
+            msg = f"Found {len(samples)} files in subfolders of: {self.root}\n"
+            msg += "Expected first file: {}".format(os.path.join(self.root, "images", samples[0][0]))
             raise RuntimeError(msg)
 
         self.loader = loader
         self.extensions = extensions
 
-        self.classes = classes
         self.class_to_idx = class_to_idx
         self.samples = samples
         self.targets = [s[1] for s in samples]
+
+    def get_classes_from_fs(self):
+        ret = list(sorted(os.listdir(Path(self.root) / "images")))
+        return ret
 
     def __getitem__(self, index: int) -> Tuple[Any, Any]:
         """
@@ -276,7 +253,7 @@ class RvlcdipDatasetFolder(VisionDataset):
         while True:
             try:
                 path, target = self.samples[index]
-                sample = self.loader(os.path.join(self.root, path))
+                sample = self.loader(os.path.join(self.root, "images", path))
                 break
             except Exception as e:
                 print(e)
@@ -304,8 +281,8 @@ class RvlcdipImageFolder(RvlcdipDatasetFolder):
             dataset_size: Optional[int] = None
     ):
         super().__init__(root, loader, IMG_EXTENSIONS if split is None else None,
-                         transform=transform,
-                         target_transform=target_transform,
-                         split=split,
-                         dataset_size=dataset_size)
+                                              transform=transform,
+                                              target_transform=target_transform,
+                                              split=split,
+                                              dataset_size=dataset_size)
         self.imgs = self.samples
